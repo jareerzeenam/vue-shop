@@ -20,6 +20,9 @@
             <router-link to="/" class="nav-link">Home</router-link>
           </li>
           <li class="nav-item">
+            <router-link to="/products" class="nav-link">Products</router-link>
+          </li>
+          <li class="nav-item">
             <router-link to="/about" class="nav-link">About</router-link>
           </li>
         </ul>
@@ -30,18 +33,28 @@
             placeholder="Search"
             aria-label="Search"
           />
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+          <a
+            class="btn btn-outline-success my-2 my-sm-0"
+            type="submit"
+            data-toggle="modal"
+            data-target="#login"
+          >Get Started</a>
         </form>
       </div>
+
     </nav>
   </div>
 </template>
 
 <script>
+
 export default {
   name: "Navbar",
   props: {
     msg: String
+  },
+  components: {
+    
   }
 };
 </script>
