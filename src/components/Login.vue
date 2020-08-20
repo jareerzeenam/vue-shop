@@ -49,6 +49,7 @@
                   <label for="exampleInputEmail1">Email address</label>
                   <input
                     type="email"
+                    v-model="email"
                     class="form-control"
                     id="exampleInputEmail1"
                     aria-describedby="emailHelp"
@@ -60,6 +61,8 @@
                   <label for="exampleInputPassword1">Password</label>
                   <input
                     type="password"
+                    @keyup.enter="login"
+                    v-model="password"
                     class="form-control"
                     id="exampleInputPassword1"
                     placeholder="Password"
@@ -67,7 +70,7 @@
                 </div>
 
                 <div class="form-group">
-                  <button class="btn btn-primary">Login</button>
+                  <button @click="login" class="btn btn-primary">Login</button>
                 </div>
               </div>
               <div
@@ -105,6 +108,7 @@
                   <input
                     type="password"
                     v-model="password"
+                    @keyup.enter="register"
                     class="form-control"
                     id="password"
                     placeholder="Password"
@@ -124,7 +128,7 @@
 </template>
 
 <script>
-import { fb } from "../firebase";
+import { fb,db } from "../firebase";
 
 export default {
   name: "Login",
@@ -139,11 +143,49 @@ export default {
     };
   },
   methods: {
+    //! Login
+    login() {
+      fb.auth()
+        .signInWithEmailAndPassword(this.email, this.password)
+        .then(() => {
+          $("#login").modal("hide");
+          this.$router.replace("admin");
+        })
+        .catch(function(error) {
+          // Handle Errors here.
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          if (errorCode === "auth/wrong-password") {
+            alert("Wrong password.");
+          } else {
+            alert(errorMessage);
+          }
+          console.log(error);
+        });
+    },
+    // ! Register
     register() {
       fb.auth()
         .createUserWithEmailAndPassword(this.email, this.password)
         .then(user => {
           $("#login").modal("hide");
+          // ! get the unique user id when a user registers
+          // console.log(user.user.uid);
+
+          // Add a new document in collection "cities"
+          db.collection("profiles")
+            .doc(user.user.uid)
+            .set({
+             name:this.name
+            })
+            .then(function() {
+              console.log("Document successfully written!");
+            })
+            .catch(function(error) {
+              console.error("Error writing document: ", error);
+            });
+
+          // ! redirect to admin page after logged in
           this.$router.replace("admin");
         })
         .catch(function(error) {

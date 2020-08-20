@@ -23,6 +23,7 @@
                 Jhon
                 <strong>Smith</strong>
               </span>
+              <span class="user-role">{{email}}</span>
               <!-- <span class="user-role">{{email}}</span> -->
               <span class="user-status">
                 <i class="fa fa-circle"></i>
@@ -60,6 +61,12 @@
                 <router-link to="/admin/products">
                   <i class="fab fa-amazon"></i>
                   <span>Products</span>
+                </router-link>
+              </li>
+              <li>
+                <router-link to="/admin/test-products">
+                  <i class="fab fa-amazon"></i>
+                  <span>Test Products</span>
                 </router-link>
               </li>
               <li>
@@ -103,6 +110,12 @@ import { fb } from "../firebase";
 
 export default {
   name: "admin",
+  data() {
+    return {
+      name: null,
+      email: null,
+    };
+  },
   components: {
     Hero
   },
@@ -120,6 +133,11 @@ export default {
           console.log("error");
         });
     }
+  },
+  created() {
+    var user = fb.auth().currentUser;
+
+    this.email = user.email;
   }
 };
 </script>
